@@ -1,0 +1,22 @@
+#! /bin/sh
+
+dir=$( pwd )
+[[ $2 != '' ]] && mandir=${dir}/$2.php || mandir=${dir}/index.php
+[[ $2 != '' ]] && logdir=${dir}/log/$2.log || logdir=${dir}/log/http-swoole.log
+[[ $(which php) != '' ]] && phpdir=$(which php) || phpdir=php
+#phpdir=$(ps aux |grep "php-fpm.conf" |awk -F "(" '{print $2}' |awk -F "php-fpm.conf)" '{print $1}')../bin/php
+
+if [ $1 != "" ];then
+if [ $1 == start ];then
+    echo $(nohup ${phpdir} ${mandir} > ${logdir} &)
+elif [ $1 == restart ];then
+    echo $(kill -9 $(ps aux|grep ${mandir} |awk '{print $2}'))
+    echo $(nohup ${phpdir} ${mandir} > ${logdir} &)
+elif [ $1 == stop ];then
+    echo $(kill -9 $(ps aux|grep ${mandir} |awk '{print $2}'))
+else
+    echo "Provide command：start|restart|stop "
+fi
+else
+    echo "Provide command：start|restart|stop "
+fi

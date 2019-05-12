@@ -1,0 +1,204 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hi chat</title>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/YYS.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css" /> -->
+
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+
+<div class="header col-md-6 col-md-offset-3">
+    你好! 欢迎来到 Hi chat!
+</div>
+<div class="body">
+
+    <div class="hichat">
+
+        <textarea class="log form-control" style="width: 100%; height: 90%;">
+
+        =======聊天室======
+
+        </textarea>
+
+        <div class="row col-md-6 col-md-offset-3">
+            <div class="col-lg-6" style="width: auto;">
+                <input type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" value="上线">
+
+                <input type="button" class="btn btn-danger" value="下线" onClick="dis()">
+            </div><!-- /.col-lg-6 -->
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="text">
+                    <span class="input-group-btn">
+                        <button class="btn btn-success" type="button" onClick="send()">Go!</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+        </div><!-- /.row -->
+
+
+    </div>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">登录</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="user" class="col-sm-2 control-label">掌门</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="user" name="user" placeholder="请输入掌门号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="pwd" name="pwd" placeholder="请输入掌门密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id="check">请记住我
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">登录</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+
+    <script>
+
+        $('#myModal').on('show.bs.modal', function (event) {
+
+        });
+
+        $(".btn-primary").click(function () {
+
+            $('#myModal').modal('hide');
+
+            var data = $('.form-horizontal').serialize();
+            var submitData = decodeURIComponent(data, true);
+
+            console.log(submitData);
+            $.ajax({
+                url: '/auth/index/checkuser.php',
+                data: submitData,
+                cache: false,//false是不缓存，true为缓存
+                async: true,//true为异步，false为同步
+                beforeSend: function () {
+                    //请求前
+                },
+                success: function (result) {
+                    result = $.parseJSON(result);
+                    //请求成功时
+                    if (result.data.url != undefined && result.c == 1) {
+                        link(result.data.url);
+                    } else {
+                        alert(result.m);
+                    }
+                },
+                complete: function () {
+                    //请求结束时
+                },
+                error: function (result) {
+                    result = $.parseJSON(result);
+                    //请求失败时
+                    alert(result.status.msg);
+                }
+            });
+        });
+
+        function link(url) {
+
+            //var url = 'ws://www.yyshou.com:81?user=aaaaa&pwd=asaads&token=asdad1dsas';//url='ws://gongruixiang.club:81';
+
+            if (url != "") {
+
+                socket = new WebSocket(url);
+
+                socket.onopen = function () {
+                    log1('连接成功');
+                    $('#myModal').modal('hide');
+                }
+
+                socket.onmessage = function (msg) {
+                    log(msg.data);
+                    console.log(msg);
+                }
+
+                socket.onclose = function () {
+                    log1('断开连接');
+                }
+            } else {
+
+                log1('通话地址错误，无法建立通话！');
+            }
+
+        }
+
+        function dis() {
+
+            socket.close();
+
+            socket = null;
+
+        }
+
+        function log1(var1) {
+            $('.log').append(var1 + '\r\n');
+        }
+
+        function log(var1) {
+            var v = $.parseJSON(var1)
+            $('.log').append(v['no'] + '说:' + v['msg'] + '\r\n');
+        }
+
+        function send() {
+            var text = $('#text').val();
+
+            socket.send(text);
+        }
+
+        function send2() {
+
+            var json = JSON.stringify({'type': 'php', 'msg': $('#text2').attr('value')})
+
+            socket.send(json);
+
+        }
+
+    </script>
+
+
+</div>
+<div class="footer col-md-6 col-md-offset-3">
+    <p>
+        备案信息：<a href="http://www.miitbeian.gov.cn" target="_blank">渝ICP备18012118号</a>
+    </p>
+</div>
+
+</body>
+</html>
