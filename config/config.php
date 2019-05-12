@@ -8,7 +8,7 @@
 
 return array(
 
-    '211.149.163.122' => [
+    '127.0.0.1' => [
         'aaa.com' => [
             'mysql' => 'db',
             'redis' => 'db',
