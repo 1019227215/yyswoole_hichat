@@ -10,7 +10,7 @@ class AuthModel extends Model
 
     //默认用户
     private $userinfo = [
-        'YYS' => ['pwd' => 'a0d2a050f3bc2e404d87fd4f9c89353a', 'alias' => '管理员', 'register_time' => '1557219723', 'friend_list ' => ['weige', 'nana']],
+        'YYS' => ['pwd' => '6a608576a0575326a0c40b30b83cec09', 'alias' => '管理员', 'register_time' => '1557219723', 'friend_list ' => ['weige', 'nana']],
         'weige' => ['pwd' => '3b2bbb1c59c6a4915f64c5f0efc15084', 'alias' => '老板', 'register_time' => '1557218733', 'friend_list ' => ['YYS', 'nana']],
         'nana' => ['pwd' => '27fd73349a5dd82e71c62928c366ba49', 'alias' => '后勤', 'register_time' => '1557217713', 'friend_list ' => ['weige', 'YYS']],
     ];
