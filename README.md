@@ -49,6 +49,8 @@
 
 #### 启动两个守护进程
 ```shell
+mkdir log
+chown www. -Rf log
 sh swoole-manages restart hichat
 sh swoole-manages restart
 ```
