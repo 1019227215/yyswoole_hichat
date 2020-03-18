@@ -46,6 +46,46 @@ class Run
     }
 
     /**
+     * 渲染视图
+     * @param $_viewFile_
+     * @param null $_data_
+     * @param bool $_return_
+     * @return string
+     */
+    public static function render($_viewFile_, $_data_ = null, $_return_ = true)
+    {
+        $bl = file_exists($_viewFile_) ? $_viewFile_ : (isset($_data_["url"]) ? (file_exists($_data_["url"]) ? $_data_["url"] : false) : false);
+
+        //var_dump($bl,$_viewFile_,file_exists($_viewFile_),$_data_);
+        if ($bl) {
+
+            //将我们render的参数数组extract为本地变量
+            if ($_data_ = &$_data_ && is_array($_data_)) {
+
+                extract($_data_, EXTR_OVERWRITE);
+            }
+
+            if ($_return_) {
+
+                //开启缓存输出
+                ob_start();
+                ob_implicit_flush(false);
+                require($bl);
+
+                return ob_get_clean();
+            } else {
+
+                //直接输出
+                return file_get_contents($bl);
+            }
+        } else {
+
+            $_data_['server']->textcontent = "您好！{$_viewFile_}正在全力开放中！";
+            return self::render(Puc . 'html/default/all.php', $_data_);//"Error! {$_viewFile_} not found!";
+        }
+    }
+
+    /**
      * 渲染动态文件
      * @param $suffix
      * @param $server
@@ -89,43 +129,6 @@ class Run
     }
 
     /**
-     * 渲染视图
-     * @param $_viewFile_
-     * @param null $_data_
-     * @param bool $_return_
-     * @return string
-     */
-    public static function render($_viewFile_, $_data_ = null, $_return_ = true)
-    {
-        if (file_exists($_viewFile_)) {
-
-            //将我们render的参数数组extract为本地变量
-            if ($_data_ = &$_data_ && is_array($_data_)) {
-
-                extract($_data_, EXTR_OVERWRITE);
-            }
-
-            if ($_return_) {
-
-                //开启缓存输出
-                ob_start();
-                ob_implicit_flush(false);
-                require($_viewFile_);
-
-                return ob_get_clean();
-            } else {
-
-                //直接输出
-                return file_get_contents($_viewFile_);
-            }
-        } else {
-
-            $_data_['server']->textcontent = "您好！{$_viewFile_}正在全力开放中！";
-            return self::render(Puc . 'html/default/all.php', $_data_);//"Error! {$_viewFile_} not found!";
-        }
-    }
-
-    /**
      * 获取默认配置
      * @return string
      */
@@ -134,25 +137,6 @@ class Run
         Tool::setConfig('main', true);
         Tool::setConfig('config', true);
         self::setDefine();//加载默认常量
-    }
-
-    /**
-     * 自动加载类
-     */
-    public static function loaders()
-    {
-        spl_autoload_register(function ($className) {
-
-            $file = str_replace('\\', '/', $className) . '.class.php';
-
-            if (file_exists($file)) {
-
-                include_once $file;
-            } else {
-
-                return "Error! {$className} Content cannot be processed!";
-            }
-        });
     }
 
     /**
@@ -176,5 +160,26 @@ class Run
         define('chroot', config['render']['safety']['chroot'] ?? S_ROOT);
         define('user', config['render']['safety']['user'] ?? 'root');
         define('group', config['render']['safety']['group'] ?? 'root');
+
     }
+
+    /**
+     * 自动加载类
+     */
+    public static function loaders()
+    {
+        spl_autoload_register(function ($className) {
+
+            $file = str_replace('\\', '/', $className) . '.class.php';
+
+            if (file_exists($file)) {
+
+                include_once $file;
+            } else {
+
+                return "Error! {$className} Content cannot be processed!";
+            }
+        });
+    }
+
 }

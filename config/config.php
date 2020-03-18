@@ -12,7 +12,7 @@ return array(
         'aaa.com' => [
             'mysql' => 'db',
             'redis' => 'db',
-            'itemdir' => S_ROOT . '/YYS/',
+            'itemdir' => S_ROOT . Project,
             'filing' => '备案号',
         ],
     ],

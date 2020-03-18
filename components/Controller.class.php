@@ -12,10 +12,10 @@ namespace components;
 class Controller
 {
 
-    public $request = [];//get/post参数
-    public static $server;//更多请求信息
-    public static $response;//cookie信息
-    public static $swoole;//swoole对象
+    public static $server;//get/post参数
+    public static $response;//更多请求信息
+    public static $swoole;//cookie信息
+    public $request = [];//swoole对象
 
     public function __construct($server, $response, $swoole)
     {
@@ -44,7 +44,7 @@ class Controller
         }
 
         //获取body内容(逻辑需要可以按照这个获取)
-        if (!empty(self::$server->rawContent())){
+        if (!empty(self::$server->rawContent())) {
 
             $this->request['body'] = self::$server->rawContent();
         }
@@ -64,15 +64,30 @@ class Controller
      * @param $data
      * @return string
      */
-    public static function renderView($files, $data, $caches = true)
+    public static function renderView($files, $data, $caches = true, $newurl = false)
     {
-        $data = Run::render(View . $files, $data);
+        $data["title"] = isset($data["title"]) ? $data["title"] : end(explode("/",$files));
+        if ($newurl) {
+            $results = Run::render(Project . View . $files, $data);
 
-        if ($caches) {
+            if ($caches) {
 
-            self::staticHtml($files, $data);
+                self::staticHtml($files, $results);
+            }
+        } else {
+            $data["url"] = Project . View . $files;
+            $files_public = $files;
+            if (preg_match("/\w+\//", $files, $matches)) {
+                $files_public = $matches[0] . "public/index.php";
+            }
+            $results = Run::render(Project . View . $files_public, $data);
+
+            if ($caches) {
+
+                self::staticHtml($files, $results);
+            }
         }
-        return $data;
+        return $results;
     }
 
     /**

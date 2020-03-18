@@ -105,7 +105,14 @@ class Tool
 
         $fname = self::catFile($fname, $tc);
 
-        return file_put_contents($fname, date('Y-m-d H:i:s ', time()) . $fconten . PHP_EOL, FILE_APPEND);
+        if ($tc){
+
+            return file_put_contents($fname, date('Y-m-d H:i:s ', time()) . $fconten . PHP_EOL, FILE_APPEND);
+        }else{
+
+            return file_put_contents($fname, $fconten);
+        }
+
     }
 
     /**
@@ -138,7 +145,10 @@ class Tool
             mkdir($path, 0777, true);
         }
 
-        return $t ? $path . "/{$name[0]}-" . date('Y-m-d', time()) . ".{$name[1]}" : $fname;
+        $fname = $t ? $path . "/{$name[0]}-" . date('Y-m-d', time()) . ".{$name[1]}" : $fname;
+        chmod($fname,0777);
+
+        return $fname;
     }
 
     /**

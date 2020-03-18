@@ -10,9 +10,9 @@ return array(
 
     'mysql' => [
         'db' => [
-            'hosts' => 'mysql:host=127.0.0.1;dbname=mysql;port=3306',
+            'hosts' => 'mysql:host=127.0.0.1;dbname=timo;port=3306',
             'username' => 'root',
-            'password' => 'root',
+            'password' => 'Thyme123',
             'options' => [
                 'charset' => 'utf8',
             ]

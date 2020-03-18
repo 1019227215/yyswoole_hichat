@@ -9,6 +9,7 @@
  */
 //date_default_timezone_set('Asia/Shanghai');//('America/Los_Angeles');
 define('S_ROOT', __DIR__);
+define('Project', '/YYS');
 ini_set('memory_limit', '-1');
 declare (ticks=1);
 
