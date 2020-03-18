@@ -1,1 +1,4 @@
 Swoole http server is started at http://0.0.0.0:80
+PHP Notice:  Only variables should be passed by reference in /components/Controller.class.php on line 69
+
+Notice: Only variables should be passed by reference in /components/Controller.class.php on line 69

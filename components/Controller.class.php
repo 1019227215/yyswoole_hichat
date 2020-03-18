@@ -66,7 +66,7 @@ class Controller
      */
     public static function renderView($files, $data, $caches = true, $newurl = false)
     {
-        $data["title"] = isset($data["title"]) ? $data["title"] : end(explode("/",$files));
+        $data["title"] = isset($data["title"]) ? $data["title"] : end(explode("/", $files));
         if ($newurl) {
             $results = Run::render(Project . View . $files, $data);
 
@@ -84,7 +84,7 @@ class Controller
 
             if ($caches) {
 
-                self::staticHtml($files, $results);
+                self::staticHtml($files, $results, false);
             }
         }
         return $results;
@@ -96,10 +96,10 @@ class Controller
      * @param $fconten
      * @return bool
      */
-    public static function staticHtml($fname, $fconten)
+    public static function staticHtml($fname, $fconten, $path = true)
     {
         $fname = explode('.', $fname);
-        $fname = Puc . config['render']['static_url'] . '/' . $fname[0] . '.html';
+        $fname = $path ? Puc . config['render']['static_url'] . '/' . $fname[0] . '.html' : Puc . $fname[0] . '.html';
 
         return Tool::setFile($fname, $fconten, 0, false, false);
     }

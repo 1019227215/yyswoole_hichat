@@ -146,7 +146,6 @@ class Tool
         }
 
         $fname = $t ? $path . "/{$name[0]}-" . date('Y-m-d', time()) . ".{$name[1]}" : $fname;
-        chmod($fname,0777);
 
         return $fname;
     }
